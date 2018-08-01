@@ -118,31 +118,31 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
                                 ""options"": [
                                     {
                                         ""text"": ""Hearts"",
-                                        ""value"": ""hearts""
+                                        ""value"": ""menu_id_hearts""
                                     },
                                     {
                                         ""text"": ""Bridge"",
-                                        ""value"": ""bridge""
+                                        ""value"": ""menu_id_bridge""
                                     },
                                     {
                                         ""text"": ""Checkers"",
-                                        ""value"": ""checkers""
+                                        ""value"": ""menu_id_checkers""
                                     },
                                     {
                                         ""text"": ""Chess"",
-                                        ""value"": ""chess""
+                                        ""value"": ""menu_id_chess""
                                     },
                                     {
                                         ""text"": ""Poker"",
-                                        ""value"": ""poker""
+                                        ""value"": ""menu_id_poker""
                                     },
                                     {
                                         ""text"": ""Falken's Maze"",
-                                        ""value"": ""maze""
+                                        ""value"": ""menu_id_maze""
                                     },
                                     {
                                         ""text"": ""Global Thermonuclear War"",
-                                        ""value"": ""war""
+                                        ""value"": ""menu_id_war""
                                     }
                                 ]
                             }
@@ -208,17 +208,7 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
                 case "help":
                 {
                     var reply = context.MakeMessage();
-                    reply.Text = null;
-                    string s =
-                    @"{
-                        ""text"": 
-""You can do one of the following commands:\n
-""help - get this help\n
-""buttons\n
-""menus\n
-""dialogs\n
-                }";
-                    reply.ChannelData = JObject.Parse(s);
+                    reply.Text = @"Available commands: ""help"", ""buttons"", ""menus"", ""dialogs""";
                     await context.PostAsync(reply);
                     context.Wait(MessageReceivedAsync);
                     return;
@@ -226,7 +216,7 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
                 default:
                 {
                     var reply = context.MakeMessage();
-                    reply.Text = $"Received: '{message.Text}'";
+                    reply.Text = $"Bot received: '{message.Text}'";
                     await context.PostAsync(reply);
                     context.Wait(MessageReceivedAsync);
                     return;
