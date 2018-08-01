@@ -191,37 +191,46 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
 
         private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<object> result)
         {
+            try
+            {
             var activity = await result as Activity;
             var message = (await result) as IMessageActivity;
-            
-            switch(message.Text)
-            {
-                case "buttons":
-                    await DemoButtonsAsync(context);
-                    return;
-                case "menu":
-                    await DemoMenuAsync(context);
-                    return;
-                case "dialog":
-                    await DemoDialogAsync(context);
-                    return;
-                case "help":
-                {
-                    var reply = context.MakeMessage();
-                    reply.Text = @"Available commands: ""help"", ""buttons"", ""menu"", ""dialog""";
-                    await context.PostAsync(reply);
-                    context.Wait(MessageReceivedAsync);
-                    return;
-                }
-                default:
-                {
-                    var reply = context.MakeMessage();
-                    reply.Text = $"Bot received: '{message.Text}'";
-                    await context.PostAsync(reply);
-                    context.Wait(MessageReceivedAsync);
-                    return;
-                }
 
+                switch (message.Text)
+                {
+                    case "buttons":
+                        await DemoButtonsAsync(context);
+                        return;
+                    case "menu":
+                        await DemoMenuAsync(context);
+                        return;
+                    case "dialog":
+                        await DemoDialogAsync(context);
+                        return;
+                    case "help":
+                    {
+                        var reply = context.MakeMessage();
+                        reply.Text = @"Available commands: ""help"", ""buttons"", ""menu"", ""dialog""";
+                        await context.PostAsync(reply);
+                        context.Wait(MessageReceivedAsync);
+                        return;
+                    }
+                    default:
+                    {
+                        var reply = context.MakeMessage();
+                        reply.Text = $"Bot received: '{message.Text}'";
+                        await context.PostAsync(reply);
+                        context.Wait(MessageReceivedAsync);
+                        return;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                var reply = context.MakeMessage();
+                reply.Text = $"Error occurred: '{ex.Message}'";
+                await context.PostAsync(reply);
+                context.Wait(MessageReceivedAsync);
             }
         }
 
