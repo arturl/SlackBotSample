@@ -4,7 +4,7 @@ using Microsoft.Bot.Connector;
 using Microsoft.Bot.Builder.Dialogs;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
-
+// 2
 namespace Microsoft.Bot.Sample.SimpleEchoBot
 {
     [Serializable]
@@ -45,120 +45,188 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
                 context.Wait(MessageReceivedAsync);
             }
         }
-        
-        private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<object> result)
+
+        private async Task DemoButtonsAsync(IDialogContext context)
         {
-            var activity = await result as Activity;
-            var message = (await result) as IMessageActivity;
-            
             var reply = context.MakeMessage();
-            
-            reply.Text = "yes to " + message.Text;
-            
-            string s2 = @"{
-                ""text"": ""Would you like to play a game ? "",
+
+            string s = @"{
+                ""text"": ""Would you like to play a game ?"",
+                ""response_type"": ""in_channel"",
                 ""attachments"": [
                     {
                         ""text"": ""Choose a game to play"",
-                        ""fallback"": ""You are unable to choose a game"",
-                        ""callback_id"": ""wopr_game"",
+                        ""fallback"": ""If you could read this message, you'd be choosing something fun to do right now."",
                         ""color"": ""#3AA3E3"",
                         ""attachment_type"": ""default"",
+                        ""callback_id"": ""game_selection"",
                         ""actions"": [
                             {
-                                ""name"": ""game"",
-                                ""text"": ""Chess"",
-                                ""type"": ""button"",
-                                ""value"": ""chess""
-                            },
-                            {
-                                ""name"": ""game"",
-                                ""text"": ""Falken's Maze"",
-                                ""type"": ""button"",
-                                ""value"": ""maze""
-                            },
-                            {
-                                ""name"": ""game"",
-                                ""text"": ""Thermonuclear War"",
-                                ""style"": ""danger"",
-                                ""type"": ""button"",
-                                ""value"": ""war"",
-                                ""confirm"": {
-                                    ""title"": ""Are you sure?"",
-                                    ""text"": ""Wouldn't you prefer a good game of chess?"",
-                                    ""ok_text"": ""Yes"",
-                                    ""dismiss_text"": ""No""
-                                }
+                                ""name"": ""games_list"",
+                                ""text"": ""Pick a game..."",
+                                ""type"": ""select"",
+                                ""options"": [
+                                    {
+                                        ""text"": ""Hearts"",
+                                        ""value"": ""hearts""
+                                    },
+                                    {
+                                        ""text"": ""Bridge"",
+                                        ""value"": ""bridge""
+                                    },
+                                    {
+                                        ""text"": ""Checkers"",
+                                        ""value"": ""checkers""
+                                    },
+                                    {
+                                        ""text"": ""Chess"",
+                                        ""value"": ""chess""
+                                    },
+                                    {
+                                        ""text"": ""Poker"",
+                                        ""value"": ""poker""
+                                    },
+                                    {
+                                        ""text"": ""Falken's Maze"",
+                                        ""value"": ""maze""
+                                    },
+                                    {
+                                        ""text"": ""Global Thermonuclear War"",
+                                        ""value"": ""war""
+                                    }
+                                ]
                             }
                         ]
                     }
                 ]
             }";
-            
-            string s3 = @"{
-    ""text"": ""Would you like to play a game ?? "",
-    ""response_type"": ""in_channel"",
-    ""attachments"": [
-        {
-            ""text"": ""Choose a game to play"",
-            ""fallback"": ""If you could read this message, you'd be choosing something fun to do right now."",
-            ""color"": ""#3AA3E3"",
-            ""attachment_type"": ""default"",
-            ""callback_id"": ""game_selection"",
-            ""actions"": [
-                {
-                    ""name"": ""games_list"",
-                    ""text"": ""Pick a game..."",
-                    ""type"": ""select"",
-                    ""options"": [
-                        {
-                            ""text"": ""Hearts"",
-                            ""value"": ""hearts""
-                        },
-                        {
-                            ""text"": ""Bridge"",
-                            ""value"": ""bridge""
-                        },
-                        {
-                            ""text"": ""Checkers"",
-                            ""value"": ""checkers""
-                        },
-                        {
-                            ""text"": ""Chess"",
-                            ""value"": ""chess""
-                        },
-                        {
-                            ""text"": ""Poker"",
-                            ""value"": ""poker""
-                        },
-                        {
-                            ""text"": ""Falken's Maze"",
-                            ""value"": ""maze""
-                        },
-                        {
-                            ""text"": ""Global Thermonuclear War"",
-                            ""value"": ""war""
-                        }
-                    ]
-                }
-            ]
-        }
-    ]
-}";
-            
-            reply.Text = null;
-            //reply.ChannelData = @"{ ""text"" : ""Test"" }";
-            
-            reply.ChannelData = JObject.Parse(s3);
-            
-            /*
-            reply.ChannelData = JObject.Parse("{\"text\":\"New comic book alert!\",\"attachments\":[{\"title\":\"The Further Adventures of Slackbot\",\"fields\":[{\"title\":\"Volume\",\"value\":\"1\",\"short\":true},{\"title\":\"Issue\",\"value\":\"3\",\"short\":true}],\"author_name\":\"Stanford S. Strickland\",\"author_icon\":\"https://api.slack.com/img/api/homepage_custom_integrations-2x.png\",\"image_url\":\"http://i.imgur.com/OJkaVOI.jpg?1\"},{\"title\":\"Synopsis\",\"text\":\"After @episod pushed exciting changes to a devious new branch back in Issue 1, Slackbot notifies @don about an unexpected deploy...\"},{\"fallback\":\"Would you recommend it to customers?\",\"title\":\"Would you recommend it to customers?\",\"callback_id\":\"comic_1234_xyz\",\"color\":\"#3AA3E3\",\"attachment_type\":\"default\",\"actions\":[{\"name\":\"recommend\",\"text\":\"Recommend\",\"type\":\"button\",\"value\":\"recommend\"},{\"name\":\"no\",\"text\":\"No\",\"type\":\"button\",\"value\":\"bad\"}]}]}");
-            */
-            
-            await context.PostAsync(reply);
 
+            reply.Text = null;
+            reply.ChannelData = JObject.Parse(s);
+            await context.PostAsync(reply);
             context.Wait(MessageReceivedAsync);
-        }        
+        }
+
+        private async Task DemoMenusAsync(IDialogContext context)
+        {
+            var reply = context.MakeMessage();
+
+            string s = @"{
+                ""text"": ""Would you like to play a game ? "",
+                ""response_type"": ""in_channel"",
+                ""attachments"": [
+                    {
+                        ""text"": ""Choose a game to play"",
+                        ""fallback"": ""If you could read this message, you'd be choosing something fun to do right now."",
+                        ""color"": ""#3AA3E3"",
+                        ""attachment_type"": ""default"",
+                        ""callback_id"": ""game_selection"",
+                        ""actions"": [
+                            {
+                                ""name"": ""games_list"",
+                                ""text"": ""Pick a game..."",
+                                ""type"": ""select"",
+                                ""options"": [
+                                    {
+                                        ""text"": ""Hearts"",
+                                        ""value"": ""hearts""
+                                    },
+                                    {
+                                        ""text"": ""Bridge"",
+                                        ""value"": ""bridge""
+                                    },
+                                    {
+                                        ""text"": ""Checkers"",
+                                        ""value"": ""checkers""
+                                    },
+                                    {
+                                        ""text"": ""Chess"",
+                                        ""value"": ""chess""
+                                    },
+                                    {
+                                        ""text"": ""Poker"",
+                                        ""value"": ""poker""
+                                    },
+                                    {
+                                        ""text"": ""Falken's Maze"",
+                                        ""value"": ""maze""
+                                    },
+                                    {
+                                        ""text"": ""Global Thermonuclear War"",
+                                        ""value"": ""war""
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }";
+
+            reply.Text = null;
+            reply.ChannelData = JObject.Parse(s);
+            await context.PostAsync(reply);
+            context.Wait(MessageReceivedAsync);
+        }
+
+        private async Task DemoDialogsAsync(IDialogContext context)
+        {
+            var reply = context.MakeMessage();
+
+            string s = @"{
+                ""trigger_id"": ""13345224609.738474920.8088930838d88f008e0"",
+                ""dialog"": {
+                            ""callback_id"": ""ryde-46e2b0"",
+                ""title"": ""Request a Ride"",
+                ""submit_label"": ""Request"",
+                ""notify_on_cancel"": true,
+                ""elements"": [
+                    {
+                        ""type"": ""text"",
+                        ""label"": ""Pickup Location"",
+                        ""name"": ""loc_origin""
+                    },
+                    {
+                        ""type"": ""text"",
+                        ""label"": ""Dropoff Location"",
+                        ""name"": ""loc_destination""
+                    }
+                ]
+                }
+            }";
+
+            reply.Text = null;
+            reply.ChannelData = JObject.Parse(s);
+            await context.PostAsync(reply);
+            context.Wait(MessageReceivedAsync);
+        }
+
+        private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<object> result)
+        {
+            var activity = await result as Activity;
+            var message = (await result) as IMessageActivity;
+            
+            switch(message.Text)
+            {
+                case "help":
+                {
+                    var reply = context.MakeMessage();
+                    reply.Text = "";
+
+                    await context.PostAsync(reply);
+                    context.Wait(MessageReceivedAsync);
+                    return;
+                }
+                case "buttons":
+                    await DemoButtonsAsync(context);
+                    return;
+                case "menus":
+                    await DemoMenusAsync(context);
+                    return;
+                case "dialogs":
+                    await DemoDialogsAsync(context);
+                    return;
+            }
+        }
 
         public async Task AfterResetAsync(IDialogContext context, IAwaitable<bool> argument)
         {
