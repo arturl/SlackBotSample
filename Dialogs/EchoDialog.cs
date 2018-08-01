@@ -96,7 +96,7 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
             context.Wait(MessageReceivedAsync);
         }
 
-        private async Task DemoMenusAsync(IDialogContext context)
+        private async Task DemoMenuAsync(IDialogContext context)
         {
             var reply = context.MakeMessage();
 
@@ -157,7 +157,7 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
             context.Wait(MessageReceivedAsync);
         }
 
-        private async Task DemoDialogsAsync(IDialogContext context)
+        private async Task DemoDialogAsync(IDialogContext context)
         {
             var reply = context.MakeMessage();
 
@@ -199,16 +199,16 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
                 case "buttons":
                     await DemoButtonsAsync(context);
                     return;
-                case "menus":
-                    await DemoMenusAsync(context);
+                case "menu":
+                    await DemoMenuAsync(context);
                     return;
-                case "dialogs":
-                    await DemoDialogsAsync(context);
+                case "dialog":
+                    await DemoDialogAsync(context);
                     return;
                 case "help":
                 {
                     var reply = context.MakeMessage();
-                    reply.Text = @"Available commands: ""help"", ""buttons"", ""menus"", ""dialogs""";
+                    reply.Text = @"Available commands: ""help"", ""buttons"", ""menu"", ""dialog""";
                     await context.PostAsync(reply);
                     context.Wait(MessageReceivedAsync);
                     return;
