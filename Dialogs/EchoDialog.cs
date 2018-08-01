@@ -51,50 +51,39 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
             var reply = context.MakeMessage();
 
             string s = @"{
-                ""text"": ""Would you like to play a game ?"",
-                ""response_type"": ""in_channel"",
+                ""text"": ""Would you like to play a game ? "",
                 ""attachments"": [
                     {
-                        ""text"": ""Choose a game to play"",
-                        ""fallback"": ""If you could read this message, you'd be choosing something fun to do right now."",
+                        ""text"": ""Choose a game to play!"",
+                        ""fallback"": ""You are unable to choose a game"",
+                        ""callback_id"": ""wopr_game"",
                         ""color"": ""#3AA3E3"",
                         ""attachment_type"": ""default"",
-                        ""callback_id"": ""game_selection"",
                         ""actions"": [
                             {
-                                ""name"": ""games_list"",
-                                ""text"": ""Pick a game..."",
-                                ""type"": ""select"",
-                                ""options"": [
-                                    {
-                                        ""text"": ""Hearts"",
-                                        ""value"": ""hearts""
-                                    },
-                                    {
-                                        ""text"": ""Bridge"",
-                                        ""value"": ""bridge""
-                                    },
-                                    {
-                                        ""text"": ""Checkers"",
-                                        ""value"": ""checkers""
-                                    },
-                                    {
-                                        ""text"": ""Chess"",
-                                        ""value"": ""chess""
-                                    },
-                                    {
-                                        ""text"": ""Poker"",
-                                        ""value"": ""poker""
-                                    },
-                                    {
-                                        ""text"": ""Falken's Maze"",
-                                        ""value"": ""maze""
-                                    },
-                                    {
-                                        ""text"": ""Global Thermonuclear War"",
-                                        ""value"": ""war""
-                                    }
-                                ]
+                                ""name"": ""game"",
+                                ""text"": ""Chess"",
+                                ""type"": ""button"",
+                                ""value"": ""chess""
+                            },
+                            {
+                                ""name"": ""game"",
+                                ""text"": ""Falken's Maze"",
+                                ""type"": ""button"",
+                                ""value"": ""maze""
+                            },
+                            {
+                                ""name"": ""game"",
+                                ""text"": ""Thermonuclear War"",
+                                ""style"": ""danger"",
+                                ""type"": ""button"",
+                                ""value"": ""war"",
+                                ""confirm"": {
+                                    ""title"": ""Are you sure?"",
+                                    ""text"": ""Wouldn't you prefer a good game of chess?"",
+                                    ""ok_text"": ""Yes"",
+                                    ""dismiss_text"": ""No""
+                                }
                             }
                         ]
                     }
@@ -175,22 +164,22 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
             string s = @"{
                 ""trigger_id"": ""13345224609.738474920.8088930838d88f008e0"",
                 ""dialog"": {
-                            ""callback_id"": ""ryde-46e2b0"",
-                ""title"": ""Request a Ride"",
-                ""submit_label"": ""Request"",
-                ""notify_on_cancel"": true,
-                ""elements"": [
-                    {
-                        ""type"": ""text"",
-                        ""label"": ""Pickup Location"",
-                        ""name"": ""loc_origin""
-                    },
-                    {
-                        ""type"": ""text"",
-                        ""label"": ""Dropoff Location"",
-                        ""name"": ""loc_destination""
-                    }
-                ]
+                    ""callback_id"": ""ryde-46e2b0"",
+                    ""title"": ""Request a Ride"",
+                    ""submit_label"": ""Request"",
+                    ""notify_on_cancel"": true,
+                    ""elements"": [
+                        {
+                            ""type"": ""text"",
+                            ""label"": ""Pickup Location"",
+                            ""name"": ""loc_origin""
+                        },
+                        {
+                            ""type"": ""text"",
+                            ""label"": ""Dropoff Location"",
+                            ""name"": ""loc_destination""
+                        }
+                    ]
                 }
             }";
 
@@ -207,15 +196,6 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
             
             switch(message.Text)
             {
-                case "help":
-                {
-                    var reply = context.MakeMessage();
-                    reply.Text = "";
-
-                    await context.PostAsync(reply);
-                    context.Wait(MessageReceivedAsync);
-                    return;
-                }
                 case "buttons":
                     await DemoButtonsAsync(context);
                     return;
@@ -225,6 +205,33 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
                 case "dialogs":
                     await DemoDialogsAsync(context);
                     return;
+                case "help":
+                {
+                    var reply = context.MakeMessage();
+                    reply.Text = null;
+                    string s =
+                    @"{
+                        ""text"": 
+""You can do one of the following commands:\n
+""help - get this help\n
+""buttons\n
+""menus\n
+""dialogs\n
+                }";
+                    reply.ChannelData = JObject.Parse(s);
+                    await context.PostAsync(reply);
+                    context.Wait(MessageReceivedAsync);
+                    return;
+                }
+                default:
+                {
+                    var reply = context.MakeMessage();
+                    reply.Text = $"Received: '{message.Text}'";
+                    await context.PostAsync(reply);
+                    context.Wait(MessageReceivedAsync);
+                    return;
+                }
+
             }
         }
 
