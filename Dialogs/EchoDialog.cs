@@ -210,7 +210,16 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
                     case "help":
                     {
                         var reply = context.MakeMessage();
-                        reply.Text = @"Available commands: ""help"", ""buttons"", ""menu"", ""dialog""";
+                        reply.Text = @"Available commands: ""help"", ""version"", ""buttons"", ""menu"", ""dialog""";
+                        await context.PostAsync(reply);
+                        context.Wait(MessageReceivedAsync);
+                        return;
+                    }
+                    case "ver":
+                    case "version":
+                    {
+                        var reply = context.MakeMessage();
+                        reply.Text = "v1";
                         await context.PostAsync(reply);
                         context.Wait(MessageReceivedAsync);
                         return;
@@ -218,7 +227,12 @@ namespace Microsoft.Bot.Sample.SimpleEchoBot
                     default:
                     {
                         var reply = context.MakeMessage();
-                        reply.Text = $"Bot received: '{message.Text}'";
+                        int numOfAttachments = 0;
+                        if(message.Attachments != null)
+                        {
+                            numOfAttachments = message.Attachments.Count;
+                        }
+                        reply.Text = $"Bot received: '{message.Text}' with {numOfAttachments} attachments";
                         await context.PostAsync(reply);
                         context.Wait(MessageReceivedAsync);
                         return;
